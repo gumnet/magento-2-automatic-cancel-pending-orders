@@ -23,5 +23,6 @@
     "psr-4": {
       "GumNet\\AutomaticCancelPendingOrders\\": ""
     }
-  }
+  },
+    "version": "1.0.1"
 }
