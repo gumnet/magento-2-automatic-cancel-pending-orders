@@ -1,0 +1,27 @@
+{
+  "name": "gumnet/magento-2-automatic-cancel-pending-orders",
+  "description": "Magento 2 Automatic cancel pending orders after a chosen number of days",
+  "require": {
+    "php": ">=7.0.0"
+  },
+  "type": "magento2-module",
+  "license": [
+      "BSD-2-Clause"
+  ],
+  "authors": [
+    {
+      "name": "Gustavo Ulyssea @ GUM Net",
+      "email": "suporte@gum.net.br",
+      "homepage": "https://gum.net.br",
+      "role": "Leader"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "GumNet\\AutomaticCancelPendingOrders\\": ""
+    }
+  }
+}
