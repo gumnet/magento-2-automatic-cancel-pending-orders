@@ -54,12 +54,11 @@ class CancelPendingOrders
         $this->logger->info("Automatic cancel order starting...");
         $days_old = $this->_scopeConfig->getValue('cancel_pending_orders/general/days_old', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if(!$days_old) return;
-        if($days_old<1) return;
-        $to = date("Y-m-d h:i:s"); // current date
-        $from = strtotime("-".$days_old." day", strtotime($to));
-        $from = date('Y-m-d h:i:s', $from); // 2 days before
+        if($days_old<2) return;
+        $to = strtotime("-".$days_old." day", strtotime($days_old));
+        $to = date('Y-m-d h:i:s', $to);
 
-        $orders = $this->getOrderCollection("pending",$from);
+        $orders = $this->getOrderCollection("pending",$to);
         foreach($orders as $_order){
             $this->logger->info("Automatic cancel order ID: ".$_order->getId());
             $order = $this->_orderFactory->create()->load($_order->getId());
@@ -67,14 +66,13 @@ class CancelPendingOrders
         }
         $this->logger->info("Automatic cancel order finished.");
     }
-    public function getOrderCollection($status,$from)
+    public function getOrderCollection($status,$to)
     {
-        $to = date("Y-m-d h:i:s"); // current date
         $orderCollection = $this->orderCollectionFactory
             ->create()
             ->addAttributeToSelect('*')
             ->addAttributeToFilter('status', ['eq'=> $status])
-            ->addFieldToFilter('created_at', array('from'=>$from, 'to'=>$to));
+            ->addFieldToFilter('created_at', array('lt' => $to));
 
         return $orderCollection;
     }
