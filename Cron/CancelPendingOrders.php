@@ -52,6 +52,10 @@ class CancelPendingOrders
     public function execute()
     {
         $this->logger->info("Automatic cancel order starting...");
+        if(!$this->_scopeConfig->getValue('cancel_pending_orders/general/days_old', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)){
+            $this->logger->info("Automatic cancel order disabled, stop...");
+            return;
+        }
         $days_old = $this->_scopeConfig->getValue('cancel_pending_orders/general/days_old', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if(!$days_old) return;
         if($days_old<2) return;

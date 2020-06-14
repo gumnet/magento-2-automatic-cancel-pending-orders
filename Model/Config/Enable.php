@@ -1,9 +1,8 @@
-<?xml version="1.0" ?>
-<!--
+<?php
 /**
  * @author Gustavo Ulyssea - gustavo.ulyssea@gmail.com
  * @copyright Copyright (c) 2020 GumNet (https://gum.net.br)
- * @package GumNet AutomaticCancelPendingOrders
+ * @package GumNet AME
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,24 +26,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
- -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
-    <system>
-        <section id="cancel_pending_orders" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>Automatic Cancel Pending Orders</label>
-            <tab>sales</tab>
-            <resource>GumNet_AutomaticCancelPendingOrders::config</resource>
-            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>General</label>
-                <field id="enable" translate="label" type="select" sortOrder="10" showInDefault="1">
-                    <label>Enable</label>
-                    <source_model>GumNet\AutomaticCancelPendingOrders\Model\Config\Enable</source_model>
-                </field>
-                <field id="days_old" translate="label" type="select" sortOrder="20" showInDefault="1">
-                    <label>Automaticallly cancel pending orders older than this number of days</label>
-                    <source_model>GumNet\AutomaticCancelPendingOrders\Model\Config\DaysOld</source_model>
-                </field>
-            </group>
-        </section>
-    </system>
-</config>
+
+namespace GumNet\AutomaticCancelPendingOrders\Model\Config;
+
+class Enable implements \Magento\Framework\Option\ArrayInterface
+{
+    public function toOptionArray()
+    {
+//            ['value' => 0, 'label' => __('Development')],
+        return [
+            ['value' => 0, 'label' => __('Disabled')],
+            ['value' => 1, 'label' => __('Enabled')],
+        ];
+    }
+}
