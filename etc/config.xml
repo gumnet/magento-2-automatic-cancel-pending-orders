@@ -1,5 +1,5 @@
-<?php
-
+<?xml version="1.0"?>
+<!--
 /**
  * @author Gustavo Ulyssea - gustavo.ulyssea@gmail.com
  * @copyright Copyright (c) 2020 - 2024 GumNet (https://gum.net.br)
@@ -27,11 +27,15 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-declare(strict_types=1);
-
-\Magento\Framework\Component\ComponentRegistrar::register(
-    \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'GumNet_AutomaticCancelPendingOrders',
-    __DIR__
-);
+ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <cancel_pending_orders>
+            <general>
+                <enable>0</enable>
+                <days_old>7</days_old>
+            </general>
+        </cancel_pending_orders>
+    </default>
+</config>

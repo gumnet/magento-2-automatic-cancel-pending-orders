@@ -1,6 +1,6 @@
 @author Gustavo Ulyssea - gustavo.ulyssea@gmail.com
 
-@copyright Copyright (c) 2020 GumNet (https://gum.net.br)
+@copyright Copyright (c) 2020 - 2024 GumNet (https://gum.net.br)
 
 @package GumNet AutomaticCancelPendingOrders
 

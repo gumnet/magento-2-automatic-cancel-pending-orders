@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Gustavo Ulyssea - gustavo.ulyssea@gmail.com
- * @copyright Copyright (c) 2020 GumNet (https://gum.net.br)
+ * @copyright Copyright (c) 2020 - 2024 GumNet (https://gum.net.br)
  * @package GumNet AutomaticCancelPendingOrders
  * All rights reserved.
  *
@@ -30,18 +30,22 @@
  -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <section id="cancel_pending_orders" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="cancel_pending_orders" translate="label" type="text" sortOrder="300"
+                 showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Automatic Cancel Pending Orders</label>
             <tab>sales</tab>
             <resource>GumNet_AutomaticCancelPendingOrders::config</resource>
-            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="general" translate="label" type="text" sortOrder="10"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General</label>
-                <field id="enable" translate="label" type="select" sortOrder="10" showInDefault="1">
+                <field id="enable" translate="label" type="select" sortOrder="10"
+                       showInDefault="1"  showInWebsite="1" showInStore="1">
                     <label>Enable</label>
-                    <source_model>GumNet\AutomaticCancelPendingOrders\Model\Config\Enable</source_model>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
                 </field>
-                <field id="days_old" translate="label" type="select" sortOrder="20" showInDefault="1">
-                    <label>Automaticallly cancel pending orders older than this number of days</label>
+                <field id="days_old" translate="label" type="select" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Automatically cancel pending orders older than this number of days</label>
                     <source_model>GumNet\AutomaticCancelPendingOrders\Model\Config\DaysOld</source_model>
                 </field>
             </group>

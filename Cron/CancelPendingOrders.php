@@ -1,7 +1,7 @@
 <?php
 /**
  * @author Gustavo Ulyssea - gustavo.ulyssea@gmail.com
- * @copyright Copyright (c) 2020 GumNet (https://gum.net.br)
+ * @copyright Copyright (c) 2020 - 2024 GumNet (https://gum.net.br)
  * @package GumNet AutomaticCancelPendingOrders
  * All rights reserved.
  *
@@ -27,57 +27,90 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+declare(strict_types=1);
+
 namespace GumNet\AutomaticCancelPendingOrders\Cron;
+
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\ResourceModel\Order\Collection;
+use Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
+use Magento\Store\Model\ScopeInterface;
+use Psr\Log\LoggerInterface;
 
 class CancelPendingOrders
 {
-    protected $orderCollectionFactory;
-    protected $orderFactory;
-    protected $orderManagement;
-    protected $logger;
-    protected $_scopeConfig;
+    public const MESSAGE_STARTING = 'Automatic cancel order starting...';
+    public const MESSAGE_DISABLED = 'Automatic cancel order disabled, stop...';
+    public const MESSAGE_AUTOMATIC_CANCEL = 'Automatic cancel order ID: ';
+    public const MESSAGE_FINISHED = 'Automatic cancel order finished.';
+    public const CONFIG_ENABLE = 'cancel_pending_orders/general/enable';
+    public const CONFIG_DAYS_OLD = 'cancel_pending_orders/general/days_old';
+    public const MINIMUM_DAYS_THRESHOLD = 2;
+    public const DATE_PATTERN = 'Y-m-d h:i:s';
 
-
+    /**
+     * @param CollectionFactory $orderCollectionFactory
+     * @param OrderRepositoryInterface $orderRepository
+     * @param LoggerInterface $logger
+     * @param ScopeConfigInterface $scopeConfig
+     */
     public function __construct(
-        \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory,
-        \Magento\Sales\Model\OrderFactory $orderFactory,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        private readonly CollectionFactory $orderCollectionFactory,
+        private readonly OrderRepositoryInterface $orderRepository,
+        private readonly LoggerInterface $logger,
+        private readonly ScopeConfigInterface $scopeConfig
     ) {
-        $this->orderCollectionFactory = $orderCollectionFactory;
-        $this->orderFactory = $orderFactory;
-        $this->logger = $logger;
-        $this->_scopeConfig = $scopeConfig;
     }
-    public function execute()
+
+    /**
+     * Cron execution
+     *
+     * @return void
+     */
+    public function execute(): void
     {
-        $this->logger->info("Automatic cancel order starting...");
-        if(!$this->_scopeConfig->getValue('cancel_pending_orders/general/days_old', \Magento\Store\Model\ScopeInterface::SCOPE_STORE)){
-            $this->logger->info("Automatic cancel order disabled, stop...");
+        $this->logger->info(self::MESSAGE_STARTING);
+
+        if (!$this->scopeConfig->getValue(self::CONFIG_ENABLE, ScopeInterface::SCOPE_STORE)) {
+            $this->logger->info(self::MESSAGE_DISABLED);
             return;
         }
-        $days_old = $this->_scopeConfig->getValue('cancel_pending_orders/general/days_old', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-        if(!$days_old) return;
-        if($days_old<2) return;
-        $to = strtotime("-".$days_old." day", strtotime($days_old));
-        $to = date('Y-m-d h:i:s', $to);
 
-        $orders = $this->getOrderCollection("pending",$to);
-        foreach($orders as $_order){
-            $this->logger->info("Automatic cancel order ID: ".$_order->getId());
-            $order = $this->_orderFactory->create()->load($_order->getId());
+        $days_old = $this->scopeConfig->getValue(self::CONFIG_DAYS_OLD, ScopeInterface::SCOPE_STORE);
+
+        if (!$days_old || $days_old < self::MINIMUM_DAYS_THRESHOLD) {
+            return;
+        }
+
+        $to = strtotime("-" . $days_old . " day");
+        $to = date(self::DATE_PATTERN, $to);
+
+        $orderCollection = $this->getOrderCollection(Order::STATE_PENDING_PAYMENT, $to);
+
+        foreach ($orderCollection->getItems() as $item) {
+            $this->logger->info(self::MESSAGE_AUTOMATIC_CANCEL . $item->getId());
+            $order = $this->orderRepository->get($item->getId());
             $order->cancel()->save();
         }
-        $this->logger->info("Automatic cancel order finished.");
-    }
-    public function getOrderCollection($status,$to)
-    {
-        $orderCollection = $this->orderCollectionFactory
-            ->create()
-            ->addAttributeToSelect('*')
-            ->addAttributeToFilter('status', ['eq'=> $status])
-            ->addFieldToFilter('created_at', array('lt' => $to));
 
-        return $orderCollection;
+        $this->logger->info(self::MESSAGE_FINISHED);
+    }
+
+    /**
+     * Get order collection
+     *
+     * @param string $status
+     * @param string $to
+     * @return Collection
+     */
+    public function getOrderCollection(string $status, string $to): Collection
+    {
+        return $this->orderCollectionFactory
+            ->create()
+            ->addFieldToFilter(OrderInterface::STATE, ['in' => [Order::STATE_NEW, Order::STATE_PENDING_PAYMENT]])
+            ->addFieldToFilter(OrderInterface::CREATED_AT, ['lt' => $to]);
     }
 }

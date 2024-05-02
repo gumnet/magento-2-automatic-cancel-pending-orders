@@ -2,7 +2,7 @@
 <!--
 /**
  * @author Gustavo Ulyssea - gustavo.ulyssea@gmail.com
- * @copyright Copyright (c) 2020 GumNet (https://gum.net.br)
+ * @copyright Copyright (c) 2020 - 2024 GumNet (https://gum.net.br)
  * @package GumNet AutomaticCancelPendingOrders
  * All rights reserved.
  *
@@ -30,5 +30,5 @@
  -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="GumNet_AutomaticCancelPendingOrders" setup_version="1.0.5" />
+    <module name="GumNet_AutomaticCancelPendingOrders" setup_version="2.0.0" />
 </config>

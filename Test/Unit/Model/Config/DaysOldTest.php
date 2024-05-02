@@ -1,8 +1,8 @@
 <?php
 /**
  * @author Gustavo Ulyssea - gustavo.ulyssea@gmail.com
- * @copyright Copyright (c) 2020 GumNet (https://gum.net.br)
- * @package GumNet AME
+ * @copyright Copyright (c) 2020 - 2024 GumNet (https://gum.net.br)
+ * @package GumNet AutomaticCancelPendingOrders
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,16 +27,28 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace GumNet\AutomaticCancelPendingOrders\Model\Config;
+declare(strict_types=1);
 
-class Enable implements \Magento\Framework\Option\ArrayInterface
+namespace GumNet\AutomaticCancelPendingOrders\Test\Unit\Model\Config;
+
+use GumNet\AutomaticCancelPendingOrders\Model\Config\DaysOld;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+
+class DaysOldTest extends TestCase
 {
-    public function toOptionArray()
+    private DaysOld|MockObject $daysOldMock;
+
+    public function setUp(): void
     {
-//            ['value' => 0, 'label' => __('Development')],
-        return [
-            ['value' => 0, 'label' => __('Disabled')],
-            ['value' => 1, 'label' => __('Enabled')],
-        ];
+        $this->daysOldMock = new DaysOld();
+    }
+
+    /**
+     * @return void
+     */
+    public function testGetDaysOld(): void
+    {
+        $this->assertIsArray($this->daysOldMock->toOptionArray());
     }
 }

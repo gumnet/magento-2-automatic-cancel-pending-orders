@@ -6,6 +6,9 @@ This Magento 2 module will automatically cancel any pending orders after a chose
 
 composer require gumnet/magento-2-automatic-cancel-pending-orders
 
+## Configuration
+
+
 ## Contact
 Please contact at suporte@gum.net.br - english / portuguese
 
@@ -13,7 +16,7 @@ Please contact at suporte@gum.net.br - english / portuguese
 
 @author Gustavo Ulyssea - gustavo.ulyssea@gmail.com
 
-@copyright Copyright (c) 2020 GumNet (https://gum.net.br)
+@copyright Copyright (c) 2020 - 2024 GumNet (https://gum.net.br)
 
 @package GumNet AutomaticCancelPendingOrders
 
